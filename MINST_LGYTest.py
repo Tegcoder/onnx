@@ -49,21 +49,20 @@ class SimpleNet(nn.Module):
             nn.Linear(64, 10)        # 隐藏层2到输出层，包括线性变换
         )
 
+    def forward(self, x):
+        """
+        前向传播函数用于处理输入数据并生成模型的输出。
 
-def forward(self, x):
-    """
-    前向传播函数用于处理输入数据并生成模型的输出。
+        Args:
+            x (Tensor): 输入数据张量，通常是形状为 (batch_size, input_features) 的数据。
 
-    Args:
-        x (Tensor): 输入数据张量，通常是形状为 (batch_size, input_features) 的数据。
-
-    Returns:
-        Tensor: 模型的输出张量，通常是形状为 (batch_size, output_features) 的数据。
-    """
-    # 将输入张量重新排列成(batch_size, 28 * 28)的形状
-    x = x.view(-1, 28 * 28)
-    # 调用模型的全连接层以生成输出
-    return self.fc_layers(x)
+        Returns:
+            Tensor: 模型的输出张量，通常是形状为 (batch_size, output_features) 的数据。
+        """
+        # 将输入张量重新排列成(batch_size, 28 * 28)的形状
+        x = x.view(-1, 28 * 28)
+        # 调用模型的全连接层以生成输出
+        return self.fc_layers(x)
 
 
 # 检查GPU是否可用，如果可用则使用GPU

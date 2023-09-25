@@ -11,15 +11,38 @@ import time
 torch.manual_seed(0)
 
 # 加载数据集并进行数据预处理
-transform = transforms.Compose(
-    [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
-train_set = torchvision.datasets.MNIST(
-    root='./data', train=True, download=True, transform=transform)
-test_set = torchvision.datasets.MNIST(
-    root='./data', train=False, download=True, transform=transform)
 
+# 定义数据预处理的转换操作，包括将图像转换为张量和标准化处理
+transform = transforms.Compose(
+    [transforms.ToTensor(),  # 将图像转换为张量
+     transforms.Normalize((0.5,), (0.5,))])  # 标准化处理，均值和标准差为(0.5, 0.5)
+
+# 创建训练集和测试集的数据加载器
+
+# 训练集数据加载器
+train_set = torchvision.datasets.MNIST(
+    root='./data',  # 数据集保存的根目录
+    train=True,      # 使用训练集
+    download=True,   # 如果数据集不存在，是否下载
+    transform=transform  # 应用定义的数据预处理转换
+)
+
+# 测试集数据加载器
+test_set = torchvision.datasets.MNIST(
+    root='./data',     # 数据集保存的根目录
+    train=False,       # 使用测试集
+    download=True,     # 如果数据集不存在，是否下载
+    transform=transform  # 应用定义的数据预处理转换
+)
+
+# 创建用于批量加载数据的数据加载器
+
+# 训练集数据加载器，每批包含512张图像，打乱顺序
 train_loader = DataLoader(train_set, batch_size=512, shuffle=True)
+
+# 测试集数据加载器，每批包含512张图像，不打乱顺序
 test_loader = DataLoader(test_set, batch_size=512, shuffle=False)
+
 
 # 定义模型
 
@@ -49,21 +72,20 @@ class SimpleNet(nn.Module):
             nn.Linear(64, 10)        # 隐藏层2到输出层，包括线性变换
         )
 
+    def forward(self, x):
+        """
+        前向传播函数用于处理输入数据并生成模型的输出。
 
-def forward(self, x):
-    """
-    前向传播函数用于处理输入数据并生成模型的输出。
+        Args:
+            x (Tensor): 输入数据张量，通常是形状为 (batch_size, input_features) 的数据。
 
-    Args:
-        x (Tensor): 输入数据张量，通常是形状为 (batch_size, input_features) 的数据。
-
-    Returns:
-        Tensor: 模型的输出张量，通常是形状为 (batch_size, output_features) 的数据。
-    """
-    # 将输入张量重新排列成(batch_size, 28 * 28)的形状
-    x = x.view(-1, 28 * 28)
-    # 调用模型的全连接层以生成输出
-    return self.fc_layers(x)
+        Returns:
+            Tensor: 模型的输出张量，通常是形状为 (batch_size, output_features) 的数据。
+        """
+        # 将输入张量重新排列成(batch_size, 28 * 28)的形状
+        x = x.view(-1, 28 * 28)
+        # 调用模型的全连接层以生成输出
+        return self.fc_layers(x)
 
 
 # 检查GPU是否可用，如果可用则使用GPU

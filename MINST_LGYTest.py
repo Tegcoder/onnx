@@ -25,19 +25,45 @@ test_loader = DataLoader(test_set, batch_size=512, shuffle=False)
 
 
 class SimpleNet(nn.Module):
+    """
+    SimpleNet是一个简单的神经网络模型，用于处理图像分类任务。
+
+    Args:
+        None
+
+    Attributes:
+        fc_layers (Sequential): 包含多个线性层的神经网络模型，用于处理输入数据。
+
+    Example:
+        >>> model = SimpleNet()
+    """
+
     def __init__(self):
         super(SimpleNet, self).__init__()
+        # 创建一个包含多个线性层的神经网络模型，用于处理输入数据
         self.fc_layers = nn.Sequential(
-            nn.Linear(28 * 28, 256),  # 输入层到隐藏层1
+            nn.Linear(28 * 28, 256),  # 输入层到隐藏层1，包括线性变换和ReLU激活函数
             nn.ReLU(),
-            nn.Linear(256, 64),      # 隐藏层1到隐藏层2
+            nn.Linear(256, 64),      # 隐藏层1到隐藏层2，包括线性变换和ReLU激活函数
             nn.ReLU(),
-            nn.Linear(64, 10)        # 隐藏层2到输出层
+            nn.Linear(64, 10)        # 隐藏层2到输出层，包括线性变换
         )
 
-    def forward(self, x):
-        x = x.view(-1, 28 * 28)
-        return self.fc_layers(x)
+
+def forward(self, x):
+    """
+    前向传播函数用于处理输入数据并生成模型的输出。
+
+    Args:
+        x (Tensor): 输入数据张量，通常是形状为 (batch_size, input_features) 的数据。
+
+    Returns:
+        Tensor: 模型的输出张量，通常是形状为 (batch_size, output_features) 的数据。
+    """
+    # 将输入张量重新排列成(batch_size, 28 * 28)的形状
+    x = x.view(-1, 28 * 28)
+    # 调用模型的全连接层以生成输出
+    return self.fc_layers(x)
 
 
 # 检查GPU是否可用，如果可用则使用GPU
